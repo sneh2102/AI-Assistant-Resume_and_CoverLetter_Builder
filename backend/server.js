@@ -10,7 +10,7 @@ const { join, resolve } = require("path");
 var cors = require("cors");
 var fs = require("fs");
 var path = require("path");
-var temp = require("temp");
+
 const bodyParser = require("body-parser");
 const prisma = new PrismaClient();
 const axios = require('axios');
@@ -159,8 +159,9 @@ app.post("/register", async (req, res) => {
 app.put("/update", async (req, res) => {
   try {
     const { previousJobs, projects, skills } = req.body;
+    console.log(req.body);
     const updatedUser = await prisma.user.update({
-      where: { id: req.userId },
+      where: { id: req.body.userId },
       data: {
         previousJobs: previousJobs,
         projects: projects,

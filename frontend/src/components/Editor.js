@@ -17,7 +17,7 @@ import AIPromptPopup from "./AIPromptPopUp";
 import axios from "axios";
 import api from "../api";
 
-function Editor({ content, changeContent, isCompiled, compiled }) {
+function Editor({ content, changeContent, isCompiled, compiled, jd }) {
   const [open, setOpen] = useState(false);
   const editorRef = useRef(null);
   const [isCopied, setCopied] = useClipboard(content);
@@ -103,10 +103,10 @@ function Editor({ content, changeContent, isCompiled, compiled }) {
     const data = await handleFetchUser();
     try {
       const response = await axios.post(
-        process.env.AI_API_KEY,
+        process.env.REACT_APP_AI_API_URL,
         {
           model: "llama3",
-          prompt: `Keep in mind only give the latex code only nothing else and use this user information data: ${data.data.previousJobs}, Projects: ${data.data.projects}, ${data.data.skills} and this job description: ${data.data.jobDescription} ` + prompt,
+          prompt: `Keep in mind only give the latex code only nothing else and use this user information data: ${data.data.previousJobs}, Projects: ${data.data.projects}, ${data.data.skills} and this job description: ${jd} ` + prompt,
           stream: true,
         },
         {

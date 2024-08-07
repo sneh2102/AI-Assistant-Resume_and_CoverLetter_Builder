@@ -32,7 +32,7 @@ export default function Login() {
     };
     try {
       const response = await api.post("http://localhost:8080/login", userData);
-      Cookies.set("token", response.data.token, { expires: 7 });
+      Cookies.set("token", response.data.token, { expires: 30 });
       setMessage("Login successfully!");
       setSeverity("success");
       setTimeout(() => {

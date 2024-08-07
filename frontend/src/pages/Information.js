@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextField, Button, Typography, Box } from '@mui/material';
 import  {useNavigate} from "react-router-dom";
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import api from '../api';
+import { useLocation } from 'react-router-dom';
 
 function ResumeBuilder() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state.email;
+  const password = location.state.password;
   const [jobTitle, setJobTitle] = useState('');
   const [company, setCompany] = useState('');
   const [duration, setDuration] = useState('');
@@ -20,7 +24,6 @@ function ResumeBuilder() {
   const [projectDescription, setProjectDescription] = useState('');
   const [projectTechStack, setProjectTechStack] = useState('');
   const [projects, setProjects] = useState('');
-
 
   const handleAddJob = () => {
     const newJob = `${jobTitle} at ${company} (${duration}) - ${summary}`;
@@ -47,6 +50,7 @@ function ResumeBuilder() {
   };
 
   const handleFetchUser = async() => {
+    
     const response = await api.get("http://localhost:8080/me");
     const data = await response.data;
     console.log('Data:', data);
@@ -54,6 +58,8 @@ function ResumeBuilder() {
   }
 
   const handleSubmit = async() => {
+    const token = await api.post("http://localhost:8080/login", { email, password });
+    Cookies.set("token", token.data.token, { expires: 30 });
     const data = await handleFetchUser();
     const user = data.data.id
     console.log('User:', user);

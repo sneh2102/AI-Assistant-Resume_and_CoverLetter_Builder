@@ -8,6 +8,7 @@ function App() {
   const { id } = useParams();
   const [title, setTitle] = useState();
   const [content, setContent] = useState();
+  const [jd, setJd] = useState();
 
   const fetchProjectData = async () => {
     try {
@@ -17,6 +18,7 @@ function App() {
       console.log(data);
       setTitle(data.title);
       setContent(data.resume);
+      setJd(data.jobDescription);
     } catch (error) {
       console.error("Error fetching project data:", error);
     }
@@ -36,7 +38,7 @@ function App() {
         <NavBar id={id} title={title} content={content} />
       )}
       {content && (
-        <WorkArea onData={handleDataFromWorkArea} content={content} id={id} />
+        <WorkArea onData={handleDataFromWorkArea} content={content} id={id} jd={jd} />
       )}
     </div>
   );

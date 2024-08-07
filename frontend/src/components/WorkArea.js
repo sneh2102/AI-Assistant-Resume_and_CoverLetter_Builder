@@ -4,7 +4,7 @@ import Editor from "./Editor";
 import Preview from "./Preview";
 
 function WorkArea(props) {
-  const { content, onData,id } = props;
+  const { content, onData,id,jd } = props;
   let markdown = localStorage.getItem("markdown") || content;
   const [latex, setLatex] = useState(markdown);
   const [orientation, setOrientation] = useState("horizontal");
@@ -38,6 +38,7 @@ function WorkArea(props) {
           changeContent={setLatex}
           isCompiled={isCompiled}
           compiled={compiled}
+          jd={jd}
         />
         <Preview content={latex} isCompiled={isCompiled} id={id} />
       </Split>

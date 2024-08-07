@@ -42,7 +42,7 @@ export default function SignUp() {
       setMessage("Register new user successfully!");
       setSeverity("success");
       setTimeout(() => {
-        navigate("/information");
+        navigate("/information",{state: {email: userData.email, password: userData.password}});
       }, 2000);
     } catch (error) {
       if (error.response && error.response.data) {
