@@ -9,10 +9,11 @@ function App() {
   const [title, setTitle] = useState();
   const [content, setContent] = useState();
   const [jd, setJd] = useState();
+  const URL = process.env.REACT_APP_BASE_URL
 
   const fetchProjectData = async () => {
     try {
-      const response = await api.get(`http://localhost:8080/projects/${id}`);
+      const response = await api.get(URL+`/projects/${id}`);
       console.log("Response:", response);
       const data = await response.data;
       console.log(data);

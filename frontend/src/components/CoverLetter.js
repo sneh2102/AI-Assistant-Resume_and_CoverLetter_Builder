@@ -26,6 +26,7 @@ export const CoverLetter = () => {
   const [open, setOpen] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
   const [job, setJob] = useState(null);
+  const URL = process.env.REACT_APP_BASE_URL
 
   const handleMarginChange = (e) => {
     const { name, value } = e.target;
@@ -42,7 +43,7 @@ export const CoverLetter = () => {
   useEffect(() => {
     const fetchJobDecription = async () => {
         try {
-            const res = await axios.get(`http://localhost:8080/projects/${id}`);
+            const res = await axios.get(URL+`/projects/${id}`);
             console.log('Job:', res.data);
             setJob(res.data);
             setContent(res.data.coverLetter);
@@ -140,7 +141,7 @@ export const CoverLetter = () => {
   };
 
   const handleFetchUser = async() => {
-    const response = await api.get("http://localhost:8080/me");
+    const response = await api.get(URL+"/me");
     const data = await response.data;
     console.log('Data:', data);
     return response;
@@ -206,7 +207,7 @@ export const CoverLetter = () => {
 
   const handleSave = async () => {
     try {
-      const response = await api.put(`http://localhost:8080/projects/cover/${id}`, {
+      const response = await api.put(URL+`/projects/cover/${id}`, {
         coverLetter: content
       });
       console.log('Response:', response);

@@ -18,6 +18,7 @@ import Alert from "@mui/material/Alert";
 const defaultTheme = createTheme();
 
 export default function SignUp() {
+  const URL = process.env.REACT_APP_BASE_URL
   const navigate = useNavigate();
   const [agree, setAgree] = React.useState(false);
   const [open, setOpen] = React.useState(false);
@@ -38,7 +39,7 @@ export default function SignUp() {
       password: data.get("password"),
     };
     try {
-      await axios.post("http://localhost:8080/register", userData);
+      await axios.post(URL +"/register", userData);
       setMessage("Register new user successfully!");
       setSeverity("success");
       setTimeout(() => {

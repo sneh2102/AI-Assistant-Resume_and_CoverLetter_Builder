@@ -22,6 +22,7 @@ export default function Login() {
   const [open, setOpen] = React.useState(false);
   const [severity, setSeverity] = React.useState("success");
   const [message, setMessage] = React.useState("");
+  const URL = process.env.REACT_APP_BASE_URL
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -31,7 +32,7 @@ export default function Login() {
       password: data.get("password"),
     };
     try {
-      const response = await api.post("http://localhost:8080/login", userData);
+      const response = await api.post(URL+"/login", userData);
       Cookies.set("token", response.data.token, { expires: 30 });
       setMessage("Login successfully!");
       setSeverity("success");

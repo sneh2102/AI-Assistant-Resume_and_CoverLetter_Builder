@@ -26,6 +26,7 @@ const Homepage = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
+  const URL = process.env.REACT_APP_BASE_URL
 
   const [newProject, setNewProject] = useState({
     projectName: "",
@@ -81,7 +82,7 @@ const Homepage = () => {
 
   const fetchUserData = async () => {
     try {
-      const response = await api.get("http://localhost:8080/me");
+      const response = await api.get(URL+"/me");
       const data = await response.data;
       setUser(data);
       setIsAuthenticated(true);
@@ -96,7 +97,7 @@ const Homepage = () => {
 
   const fetchProjectData = async () => {
     try {
-      const response = await api.get("http://localhost:8080/projects");
+      const response = await api.get(URL+"/projects");
       let data = await response.data;
       data = buildData(data);
       setDataProject(data);
@@ -117,7 +118,7 @@ const Homepage = () => {
   const handleScrapeDescription = async () => {
     if (newProject.link) {
       try {
-        const response = await api.post("http://localhost:8080/scrape", 
+        const response = await api.post(URL+"/scrape", 
           { url: newProject.link },
           { 
             headers: { 
@@ -194,7 +195,7 @@ const Homepage = () => {
                 status: newProject.status,
               };
               try {
-                const res = await api.post("http://localhost:8080/projects", data);
+                const res = await api.post(URL+"/projects", data);
                 const newProjectId = res.data.id;
                 if (newProjectId) {
                   setMessage("Create new project successfully!");

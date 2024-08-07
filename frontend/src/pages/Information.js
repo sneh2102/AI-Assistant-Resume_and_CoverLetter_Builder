@@ -24,6 +24,7 @@ function ResumeBuilder() {
   const [projectDescription, setProjectDescription] = useState('');
   const [projectTechStack, setProjectTechStack] = useState('');
   const [projects, setProjects] = useState('');
+  const URL = process.env.REACT_APP_BASE_URL
 
   const handleAddJob = () => {
     const newJob = `${jobTitle} at ${company} (${duration}) - ${summary}`;
@@ -51,19 +52,19 @@ function ResumeBuilder() {
 
   const handleFetchUser = async() => {
     
-    const response = await api.get("http://localhost:8080/me");
+    const response = await api.get(URL+"/me");
     const data = await response.data;
     console.log('Data:', data);
     return response;
   }
 
   const handleSubmit = async() => {
-    const token = await api.post("http://localhost:8080/login", { email, password });
+    const token = await api.post(URL+"/login", { email, password });
     Cookies.set("token", token.data.token, { expires: 30 });
     const data = await handleFetchUser();
     const user = data.data.id
     console.log('User:', user);
-    await axios.put('http://localhost:8080/update', { userId: user, previousJobs, projects, skills }, {
+    await axios.put(URL+'/update', { userId: user, previousJobs, projects, skills }, {
       headers: {
         'Authorization': 'Bearer ' + Cookies.get('token')
       }

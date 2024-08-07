@@ -8,11 +8,12 @@ const Jobs = () => {
   const { id } = useParams();
   const [project, setProject] = useState(null);
   const [loading, setLoading] = useState(true);
+  const URL = process.env.REACT_APP_BASE_URL
 
   useEffect(() => {
     const fetchProject = async () => {
       try {
-        const res = await axios.get(`http://localhost:8080/projects/${id}`);
+        const res = await axios.get(URL+`/projects/${id}`);
         setProject(res.data);
       } catch (error) {
         console.error("Error fetching project data:", error);

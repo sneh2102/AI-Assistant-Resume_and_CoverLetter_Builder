@@ -25,6 +25,7 @@ function Editor({ content, changeContent, isCompiled, compiled, jd }) {
   const [popupPosition, setPopupPosition] = useState({ top: 0, left: 0 });
   const [aiResponse, setAIResponse] = useState("");
   const [annotations, setAnnotations] = useState([]);
+  const URL = process.env.REACT_APP_BASE_URL
 
   useEffect(() => {
     const handleKeyDown = (event) => {
@@ -87,7 +88,7 @@ function Editor({ content, changeContent, isCompiled, compiled, jd }) {
   };
 
   const handleFetchUser = async () => {
-    const response = await api.get("http://localhost:8080/me");
+    const response = await api.get(URL+"/me");
     const data = await response.data;
     console.log("Data:", data);
     return response;

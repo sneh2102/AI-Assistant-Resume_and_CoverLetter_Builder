@@ -49,6 +49,7 @@ function createData(id, title, link, type, status, lastModified) {
 }
 
 export default function TableProjects({ dataProject }) {
+  const URL = process.env.REACT_APP_BASE_URL
   const navigate = useNavigate();
   const [severity, setSeverity] = React.useState("success");
   const [message, setMessage] = React.useState("");
@@ -82,7 +83,7 @@ export default function TableProjects({ dataProject }) {
 
   const handleDelete = async (id) => {
     try {
-      const res = await api.delete(`http://localhost:8080/projects/${id}`);
+      const res = await api.delete(URL+`/projects/${id}`);
       if (res.status === 204) {
         setMessage("Delete project successfully!");
         setSeverity("success");

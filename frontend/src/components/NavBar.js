@@ -16,6 +16,7 @@ function NavBar(props) {
   const [open, setOpen] = React.useState(false);
   const [severity, setSeverity] = React.useState("success");
   const [message, setMessage] = React.useState("");
+  const URL = process.env.REACT_APP_BASE_URL
   const handleCloseDialog = (event, reason) => {
     if (reason === "clickaway") {
       return;
@@ -35,7 +36,7 @@ function NavBar(props) {
   };
   const updateProjectData = async (title, content) => {
     try {
-      const response = await api.put(`http://localhost:8080/projects/${id}`, {
+      const response = await api.put(URL+`/projects/${id}`, {
         title: title,
         resume: content,
       });

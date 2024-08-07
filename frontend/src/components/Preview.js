@@ -16,7 +16,7 @@ function Preview({ content, isCompiled, id }) {
   const [rawResponse, setRawResponse] = useState({});
   const handle = useFullScreenHandle();
   const [isLoading, setIsLoading] = useState(false);
-
+  const URL = process.env.REACT_APP_BASE_URL
   const [numPages, setNumPages] = useState(null);
 
   useEffect(() => {
@@ -29,12 +29,12 @@ function Preview({ content, isCompiled, id }) {
       const encodedString = Buffer.from(content).toString("base64");
       console.log(encodedString);
       const formData = new FormData();
-      const response = await axios.get(`http://localhost:8080/projects/${id}`);
+      const response = await axios.get(URL+`/projects/${id}`);
       formData.append("tex", encodedString);
       formData.append("filename", response.data.title);
       formData.append("id", id);
   
-      const postResponse = await axios.post("http://localhost:8080/upload", formData, {
+      const postResponse = await axios.post(URL+"/upload", formData, {
         responseType: 'blob' // Ensure the response is treated as a blob
       });
   
