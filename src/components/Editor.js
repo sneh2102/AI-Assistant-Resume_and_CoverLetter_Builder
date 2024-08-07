@@ -17,7 +17,6 @@ import AIPromptPopup from "./AIPromptPopUp";
 import axios from "axios";
 import api from "../api";
 
-
 function Editor({ content, changeContent, isCompiled, compiled }) {
   const [open, setOpen] = useState(false);
   const editorRef = useRef(null);
@@ -28,7 +27,6 @@ function Editor({ content, changeContent, isCompiled, compiled }) {
   const [annotations, setAnnotations] = useState([]);
 
   useEffect(() => {
-
     const handleKeyDown = (event) => {
       if (event.ctrlKey && event.key === "i") {
         event.preventDefault();
@@ -53,10 +51,11 @@ function Editor({ content, changeContent, isCompiled, compiled }) {
   }, [content]);
 
   useEffect(() => {
+    let encodedString;
     if (content === "") {
-      var encodedString = new Buffer.from(placeholder).toString("base64");
+      encodedString = btoa(placeholder);
     } else {
-      var encodedString = new Buffer.from(content).toString("base64");
+      encodedString = btoa(content);
     }
 
     const formData = new FormData();
@@ -86,62 +85,67 @@ function Editor({ content, changeContent, isCompiled, compiled }) {
   const handleClearClick = () => {
     changeContent("");
   };
-  
-  const handleFetchUser = async() => {
+
+  const handleFetchUser = async () => {
     const response = await api.get("http://localhost:8080/me");
     const data = await response.data;
-    console.log('Data:', data);
+    console.log("Data:", data);
     return response;
-  }
+  };
+
   const handlePromptSubmit = async (prompt) => {
-    let accumulatedResponse = '';
-    let displayedResponse = '';
+    let accumulatedResponse = "";
+    let displayedResponse = "";
     let cursorPosition = editorRef.current.editor.getCursorPosition();
     const session = editorRef.current.editor.getSession();
     let updateTimeout;
 
     const data = await handleFetchUser();
     try {
-      const response = await axios.post('http://localhost:11434/api/generate', {
-        "model": "llama3",
-        "prompt": `Keep in mind only give the latex code only nothing else and use this user information data: ${data.data.previousJobs} , Projects: ${data.data.projects}, ${data.data.skills} and this job description: ${data.data.jobDescription} `+ prompt,
-        "stream": true
-      }, {
-        responseType: 'text',
-        onDownloadProgress: progressEvent => {
-          const dataChunk = progressEvent.event.target.responseText;
-          accumulatedResponse = handleStreamChunk(dataChunk);
-          
-          clearTimeout(updateTimeout);
-          updateTimeout = setTimeout(() => {
-            if (accumulatedResponse !== displayedResponse) {
-              const diff = accumulatedResponse.slice(displayedResponse.length);
-              session.insert(cursorPosition, diff);
-              cursorPosition = editorRef.current.editor.getCursorPosition();
-              displayedResponse = accumulatedResponse;
-            }
-          }, 100); 
+      const response = await axios.post(
+        process.env.AI_API_KEY,
+        {
+          model: "llama3",
+          prompt: `Keep in mind only give the latex code only nothing else and use this user information data: ${data.data.previousJobs}, Projects: ${data.data.projects}, ${data.data.skills} and this job description: ${data.data.jobDescription} ` + prompt,
+          stream: true,
+        },
+        {
+          responseType: "text",
+          onDownloadProgress: (progressEvent) => {
+            const dataChunk = progressEvent.event.target.responseText;
+            accumulatedResponse = handleStreamChunk(dataChunk);
+
+            clearTimeout(updateTimeout);
+            updateTimeout = setTimeout(() => {
+              if (accumulatedResponse !== displayedResponse) {
+                const diff = accumulatedResponse.slice(displayedResponse.length);
+                session.insert(cursorPosition, diff);
+                cursorPosition = editorRef.current.editor.getCursorPosition();
+                displayedResponse = accumulatedResponse;
+              }
+            }, 100);
+          },
         }
-      });
+      );
 
       if (accumulatedResponse !== displayedResponse) {
         const diff = accumulatedResponse.slice(displayedResponse.length);
         session.insert(cursorPosition, diff);
       }
-  
+
       setAIResponse(accumulatedResponse);
       setShowPopup(false);
     } catch (error) {
       console.error("Error calling AI API:", error);
     }
   };
-  
+
   const handleStreamChunk = (dataChunk) => {
-    const lines = dataChunk.split('\n');
-    let response = '';
-    
-    lines.forEach(line => {
-      if (line.trim() !== '') {
+    const lines = dataChunk.split("\n");
+    let response = "";
+
+    lines.forEach((line) => {
+      if (line.trim() !== "") {
         try {
           const parsedData = JSON.parse(line);
           if (parsedData.response) {
@@ -152,7 +156,7 @@ function Editor({ content, changeContent, isCompiled, compiled }) {
         }
       }
     });
-  
+
     return response;
   };
 
@@ -199,12 +203,7 @@ function Editor({ content, changeContent, isCompiled, compiled }) {
       </div>
 
       <Snackbar open={open} autoHideDuration={2000} onClose={handleClose}>
-        <Alert
-          onClose={handleClose}
-          severity="success"
-          elevation={6}
-          variant="filled"
-        >
+        <Alert onClose={handleClose} severity="success" elevation={6} variant="filled">
           <AlertTitle>Copied</AlertTitle>
           The latex is copied to your clipboard
         </Alert>
@@ -227,7 +226,7 @@ function Editor({ content, changeContent, isCompiled, compiled }) {
         enableSnippets={true}
         editorProps={{ $blockScrolling: true }}
       />
-       {showPopup && (
+      {showPopup && (
         <AIPromptPopup
           position={popupPosition}
           onClose={() => setShowPopup(false)}
@@ -237,4 +236,5 @@ function Editor({ content, changeContent, isCompiled, compiled }) {
     </div>
   );
 }
+
 export default Editor;

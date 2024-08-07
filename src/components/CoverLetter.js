@@ -83,7 +83,7 @@ export const CoverLetter = () => {
     const initialLength = quillEditor.getLength();
   
     try {
-      const response = await axios.post('http://localhost:11434/api/generate', {
+      const response = await axios.post(process.env.AI_API_KEY, {
         "model": "llama3",
         "prompt": prompt,
         "stream": true
